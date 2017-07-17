@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="maerskDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Agent">
+    <Key>
+      <PropertyRef Name="agentID" />
+    </Key>
+    <Property Name="agentID" Type="Int32" Nullable="false" />
+    <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="agentFN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="agentLN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="agentEmail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="agentContact" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Cargo">
+    <Key>
+      <PropertyRef Name="cargoID" />
+    </Key>
+    <Property Name="cargoID" Type="Int32" Nullable="false" />
+    <Property Name="volume" Type="Int32" />
+    <Property Name="weight" Type="Int32" />
+    <Property Name="warehouseID" Type="Int32" />
+    <Property Name="customerID" Type="Int32" />
+    <NavigationProperty Name="Shippments" Relationship="Self.FK_Shippment_Cargo" FromRole="Cargo" ToRole="Shippment" />
+  </EntityType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="customerID" />
+    </Key>
+    <Property Name="customerID" Type="Int32" Nullable="false" />
+    <Property Name="customerFN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="customerLN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="gender" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="age" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Shippment">
+    <Key>
+      <PropertyRef Name="shippmentID" />
+    </Key>
+    <Property Name="shippmentID" Type="Int32" Nullable="false" />
+    <Property Name="source" Type="Int32" />
+    <Property Name="destination" Type="Int32" />
+    <Property Name="departTime" Type="DateTime" Precision="3" />
+    <Property Name="arrivalTime" Type="DateTime" Precision="3" />
+    <Property Name="cargoID" Type="Int32" />
+    <NavigationProperty Name="Cargo" Relationship="Self.FK_Shippment_Cargo" FromRole="Shippment" ToRole="Cargo" />
+    <NavigationProperty Name="Warehouse" Relationship="Self.FK_Shippment_Warehouse" FromRole="Shippment" ToRole="Warehouse" />
+    <NavigationProperty Name="Warehouse1" Relationship="Self.FK_Shippment_Warehouse2" FromRole="Shippment" ToRole="Warehouse" />
+  </EntityType>
+  <EntityType Name="Staff">
+    <Key>
+      <PropertyRef Name="staffID" />
+    </Key>
+    <Property Name="staffID" Type="Int32" Nullable="false" />
+    <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="staffFN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="staffLN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="staffEmail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="staffContact" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Warehouse">
+    <Key>
+      <PropertyRef Name="warehouseID" />
+    </Key>
+    <Property Name="warehouseID" Type="Int32" Nullable="false" />
+    <Property Name="warehouseName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="warehouseLocation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Shippments" Relationship="Self.FK_Shippment_Warehouse" FromRole="Warehouse" ToRole="Shippment" />
+    <NavigationProperty Name="Shippments1" Relationship="Self.FK_Shippment_Warehouse2" FromRole="Warehouse" ToRole="Shippment" />
+  </EntityType>
+  <Association Name="FK_Shippment_Cargo">
+    <End Role="Cargo" Type="Self.Cargo" Multiplicity="0..1" />
+    <End Role="Shippment" Type="Self.Shippment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cargo">
+        <PropertyRef Name="cargoID" />
+      </Principal>
+      <Dependent Role="Shippment">
+        <PropertyRef Name="cargoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Shippment_Warehouse">
+    <End Role="Warehouse" Type="Self.Warehouse" Multiplicity="0..1" />
+    <End Role="Shippment" Type="Self.Shippment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Warehouse">
+        <PropertyRef Name="warehouseID" />
+      </Principal>
+      <Dependent Role="Shippment">
+        <PropertyRef Name="source" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Shippment_Warehouse2">
+    <End Role="Warehouse" Type="Self.Warehouse" Multiplicity="0..1" />
+    <End Role="Shippment" Type="Self.Shippment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Warehouse">
+        <PropertyRef Name="warehouseID" />
+      </Principal>
+      <Dependent Role="Shippment">
+        <PropertyRef Name="destination" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="maerskDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Agents" EntityType="Self.Agent" />
+    <EntitySet Name="Cargoes" EntityType="Self.Cargo" />
+    <EntitySet Name="Customers" EntityType="Self.Customer" />
+    <EntitySet Name="Shippments" EntityType="Self.Shippment" />
+    <EntitySet Name="Staffs" EntityType="Self.Staff" />
+    <EntitySet Name="Warehouses" EntityType="Self.Warehouse" />
+    <AssociationSet Name="FK_Shippment_Cargo" Association="Self.FK_Shippment_Cargo">
+      <End Role="Cargo" EntitySet="Cargoes" />
+      <End Role="Shippment" EntitySet="Shippments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Shippment_Warehouse" Association="Self.FK_Shippment_Warehouse">
+      <End Role="Warehouse" EntitySet="Warehouses" />
+      <End Role="Shippment" EntitySet="Shippments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Shippment_Warehouse2" Association="Self.FK_Shippment_Warehouse2">
+      <End Role="Warehouse" EntitySet="Warehouses" />
+      <End Role="Shippment" EntitySet="Shippments" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
